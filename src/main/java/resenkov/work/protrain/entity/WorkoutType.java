@@ -9,6 +9,8 @@ import lombok.Setter;
 @Entity
 @Table(name = "workout_types", schema = "train")
 public class WorkoutType {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

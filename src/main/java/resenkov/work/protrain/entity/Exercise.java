@@ -24,7 +24,7 @@ public class Exercise {
     @Column(name = "exercise_name", nullable = false)
     private String exerciseName;
 
-    @Column(name = "description", length = Integer.MAX_VALUE)
-    private String description;
+    @Column(name = "muscle_division", length = Integer.MAX_VALUE)
+    private String muscleDivision;
 
 }
