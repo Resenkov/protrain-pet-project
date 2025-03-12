@@ -41,7 +41,7 @@ public class ExerciseController {
     @PostMapping("/add")
     public ResponseEntity<Exercise> add(@RequestBody Exercise exercise) {
         if(exercise.getExerciseName() == null || exercise.getExerciseName().isEmpty()) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(exerciseService.addExercise(exercise));
     }
@@ -49,10 +49,10 @@ public class ExerciseController {
     @PutMapping("/update")
     public ResponseEntity<Exercise> update(@RequestBody ExerciseSearch exerciseSearch) {
         if(exerciseSearch.getExerciseName() == null || exerciseSearch.getExerciseName().isEmpty()) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         if(exerciseSearch.getOldDivision() == null || exerciseSearch.getOldDivision().isEmpty()) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         Exercise exercise = exerciseRepository.findByExerciseNameAndMuscleDivision(exerciseSearch.getExerciseName(), exerciseSearch.getOldDivision());
@@ -60,7 +60,7 @@ public class ExerciseController {
 
         exerciseService.updateExercise(exercise);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

@@ -5,7 +5,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import resenkov.work.protrain.entity.Exercise;
 import resenkov.work.protrain.repository.ExerciseRepository;
-import resenkov.work.protrain.search.ExerciseSearch;
+
 
 import java.util.List;
 
@@ -32,8 +32,8 @@ public class ExerciseService {
         return exerciseRepository.save(exercise);
     }
 
-    public Exercise updateExercise(Exercise exercise) {
-        return exerciseRepository.save(exercise);
+    public void updateExercise(Exercise exercise) {
+        exerciseRepository.save(exercise);
     }
 
     public void deleteExercise(String exerciseName) {
