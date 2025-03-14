@@ -26,7 +26,7 @@ public class DifficultyLevel {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "level_name", nullable = false, length = 50)
+    @Column(name = "level_name", nullable = false, length = 50, unique = true)
     private String levelName;
 
     @Column(name = "level_value", nullable = false)
