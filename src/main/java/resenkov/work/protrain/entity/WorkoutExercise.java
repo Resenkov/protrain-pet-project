@@ -13,24 +13,19 @@ import java.math.BigDecimal;
 public class WorkoutExercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "sets", nullable = false)
     private Integer sets;
-
-    @Column(name = "reps", nullable = false)
     private Integer reps;
 
-    @Column(name = "weight_kg", precision = 5, scale = 2)
+    @Column(name = "weight_kg")
     private BigDecimal weightKg;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "workout_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "workout_id")
     private Workout workout;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "exercise_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "exercise_id")
     private Exercise exercise;
-
 }

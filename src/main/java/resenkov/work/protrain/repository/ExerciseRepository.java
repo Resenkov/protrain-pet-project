@@ -10,8 +10,5 @@ import java.util.List;
 public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
 
     List<Exercise> findExerciseByMuscleDivision(String muscleDivision);
-    void deleteByExerciseName(String exerciseName);
-
-    Exercise findByExerciseNameAndMuscleDivision(String exerciseName, String muscleDivision);
 
 }

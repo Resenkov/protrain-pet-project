@@ -14,7 +14,7 @@ public class WorkoutType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "type_name", nullable = false, length = 100)
     private String typeName;

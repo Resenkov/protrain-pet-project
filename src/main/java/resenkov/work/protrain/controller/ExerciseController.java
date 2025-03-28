@@ -1,66 +1,67 @@
 package resenkov.work.protrain.controller;
 
 
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import resenkov.work.protrain.entity.Exercise;
-import resenkov.work.protrain.repository.ExerciseRepository;
-import resenkov.work.protrain.search.ExerciseSearch;
+import resenkov.work.protrain.dto.ExerciseDTO;
 import resenkov.work.protrain.service.ExerciseService;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/exercise")
 public class ExerciseController {
-
     private final ExerciseService exerciseService;
-    private final ExerciseRepository exerciseRepository;
 
-    public ExerciseController(ExerciseService exerciseService, ExerciseRepository exerciseRepository) {
+    @Autowired
+    public ExerciseController(ExerciseService exerciseService) {
         this.exerciseService = exerciseService;
-        this.exerciseRepository = exerciseRepository;
-    }
-
-    @PostMapping("/all")
-    List<Exercise> getAll() {
-        return exerciseService.findAll();
-    }
-
-    @PostMapping("/allDivision")
-    List<Exercise> getByDivision(@RequestBody String division) {
-        return exerciseService.findByMuscleDivision(division);
-    }
-
-    @DeleteMapping("/delete")
-    public void delete(@RequestBody String exerciseName) {
-        exerciseService.deleteExercise(exerciseName);
-    }
-
-    @PostMapping("/add")
-    public ResponseEntity<Exercise> add(@RequestBody Exercise exercise) {
-        if(exercise.getExerciseName() == null || exercise.getExerciseName().isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return ResponseEntity.ok(exerciseService.addExercise(exercise));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Exercise> update(@RequestBody ExerciseSearch exerciseSearch) {
-        if(exerciseSearch.getExerciseName() == null || exerciseSearch.getExerciseName().isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<ExerciseDTO> updateExercise(@Valid @RequestBody ExerciseDTO exerciseDTO) {
+        if(exerciseDTO.getId() == null) {
+            return new ResponseEntity("ID не должен быть равен нулю", HttpStatus.BAD_REQUEST);
         }
-        if(exerciseSearch.getOldDivision() == null || exerciseSearch.getOldDivision().isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if(exerciseDTO.getExerciseName() == null) {
+            return new ResponseEntity("Имя упражнение не может быть пустым!", HttpStatus.BAD_REQUEST);
         }
-
-        Exercise exercise = exerciseRepository.findByExerciseNameAndMuscleDivision(exerciseSearch.getExerciseName(), exerciseSearch.getOldDivision());
-        exercise.setMuscleDivision(exerciseSearch.getNewDivision());
-
-        exerciseService.updateExercise(exercise);
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        ExerciseDTO updatedExercise = exerciseService.updateExercise(exerciseDTO);
+        return ResponseEntity.ok(updatedExercise);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<ExerciseDTO>> getAllExercises() {
+        List<ExerciseDTO> allExercises = exerciseService.getAllExercises();
+        return ResponseEntity.ok(allExercises);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteExercise(@PathVariable Long id) {
+        if (id == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        exerciseService.deleteExercise(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<ExerciseDTO> addExercise(@Valid @RequestBody ExerciseDTO exerciseDTO) {
+        if(exerciseDTO.getExerciseName() == null) {
+            return new ResponseEntity("Имя упражнение не может быть пустым!", HttpStatus.BAD_REQUEST);
+        }
+        ExerciseDTO createdExercise = exerciseService.addExercise(exerciseDTO);
+        return new ResponseEntity<>(createdExercise, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/find")
+    public ResponseEntity<List<ExerciseDTO>> findExercise(
+            @RequestParam("muscleDivision") String muscleDivision) {
+        List<ExerciseDTO> exercises = exerciseService.findByMuscleDivision(muscleDivision);
+        return ResponseEntity.ok(exercises);
+    }
 }
