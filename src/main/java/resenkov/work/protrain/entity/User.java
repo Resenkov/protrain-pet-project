@@ -2,6 +2,7 @@ package resenkov.work.protrain.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -28,7 +29,7 @@ public class User {
     private Long id;
 
     @Email
-    @NotNull(message = "Почта пользователя обязательна для заполнения!")
+    @NotBlank(message = "Почта пользователя обязательна для заполнения!")
     @Column(name = "email", nullable = false)
     private String email;
 

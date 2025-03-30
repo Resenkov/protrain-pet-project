@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Профиль</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <div class="user-info">
+        <h1>Мой профиль</h1>
+        <div>
+            <a th:href="@{/profile}" class="button">Назад</a>
+        </div>
+    </div>
+</header>
+<div class="container">
+    <div class="card">
+        <div class="profile-info">
+            <p><strong>Имя пользователя:</strong> <span th:text="${user.username}"></span></p>
+            <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+            <p><strong>Дата регистрации:</strong> <span th:text="${#temporals.format(user.createdAt, 'dd.MM.yyyy HH:mm')}"></span></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

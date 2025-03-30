@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Настройки</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header>
+        <div class="user-info">
+            <h1>Настройки</h1>
+            <div>
+                <a th:href="@{/profile}" class="button">Назад</a>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="card">
+            <form th:action="@{/settings}" method="post" th:object="${user}">
+                <div class="form-group">
+                    <label>Имя пользователя</label>
+                    <input type="text" th:field="*{username}" required/>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" th:field="*{email}" required readonly/>
+                </div>
+                <div class="form-group">
+                    <label>Новый пароль</label>
+                    <input type="password" name="newPassword"/>
+                </div>
+                <button type="submit" class="button">Сохранить изменения</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
