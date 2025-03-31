@@ -47,9 +47,16 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String login(@RequestParam(required = false) String error, Model model) {
+    public String login(
+            @RequestParam(required = false) String error,
+            @RequestParam(required = false) String logout,
+            Model model
+    ) {
         if (error != null) {
-            model.addAttribute("error", "Неверный email или пароль");
+            model.addAttribute("error", "Неверные учетные данные");
+        }
+        if (logout != null) {
+            model.addAttribute("message", "Вы успешно вышли из системы");
         }
         return "login";
     }

@@ -1,37 +1,274 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Регистрация</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация | Ваш Сервис</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome (иконки) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Кастомные стили -->
+    <style>
+        :root {
+            --purple-dark: #6a11cb;
+            --purple-light: #a019e3;
+            --white: #ffffff;
+            --gray-light: #f8f9fa;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--purple-dark), var(--purple-light));
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--purple-light);
+            box-shadow: 0 0 0 0.25rem rgba(156, 39, 176, 0.25);
+        }
+
+        .btn-register {
+            background: linear-gradient(to right, var(--purple-dark), var(--purple-light));
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(106, 17, 203, 0.3);
+        }
+
+        .input-group-text {
+            background-color: transparent;
+            border-right: none;
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        /* Валидация */
+        .is-invalid {
+            border-color: #dc3545 !important;
+        }
+
+        .invalid-feedback {
+            color: #dc3545;
+            font-size: 0.85em;
+        }
+    </style>
 </head>
 <body>
-<header>
-    <h1>Регистрация нового пользователя</h1>
-</header>
-<div class="container">
-    <div class="card">
-        <form th:action="@{/register}" th:object="${user}" method="post">
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" th:field="*{email}"/>
-                <span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card animate-fadeIn">
+                <div class="card-body p-5">
+                    <!-- Логотип или заголовок -->
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold" style="color: var(--purple-dark);">Создайте аккаунт</h2>
+                        <p class="text-muted">Присоединяйтесь к нашему сообществу</p>
+                    </div>
+
+                    <!-- Форма регистрации -->
+                    <form th:action="@{/register}" th:object="${user}" method="post" id="registerForm" novalidate>
+                        <!-- Имя пользователя -->
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Имя пользователя</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        id="username"
+                                        th:field="*{username}"
+                                        placeholder="Введите ваше имя"
+                                        required>
+                            </div>
+                            <div class="invalid-feedback">Пожалуйста, введите имя!</div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                <input
+                                        type="email"
+                                        class="form-control"
+                                        id="email"
+                                        th:field="*{email}"
+                                        placeholder="example@mail.com"
+                                        required>
+                            </div>
+                            <div class="invalid-feedback" id="emailFeedback">Пожалуйста, введите корректный email!</div>
+                        </div>
+
+                        <!-- Пароль -->
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Пароль</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input
+                                        type="password"
+                                        class="form-control"
+                                        id="password"
+                                        th:field="*{passwordHash}"
+                                        placeholder="Не менее 6 символов"
+                                        minlength="6"
+                                        required>
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback">Пароль должен быть не менее 6 символов!</div>
+                            <div class="progress mt-2" style="height: 5px;">
+                                <div id="passwordStrength" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                            </div>
+                            <small class="text-muted">Сложность пароля: <span id="strengthText">Слабый</span></small>
+                        </div>
+
+                        <!-- Подтверждение пароля -->
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Подтвердите пароль</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input
+                                        type="password"
+                                        class="form-control"
+                                        id="confirmPassword"
+                                        placeholder="Повторите пароль"
+                                        required>
+                            </div>
+                            <div class="invalid-feedback" id="confirmPasswordFeedback">Пароли не совпадают!</div>
+                        </div>
+
+                        <!-- Чекбокс согласия -->
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="terms" required>
+                            <label class="form-check-label" for="terms">Я согласен с <a href="#">условиями использования</a></label>
+                            <div class="invalid-feedback">Необходимо ваше согласие!</div>
+                        </div>
+
+                        <!-- Кнопка регистрации -->
+                        <button type="submit" class="btn btn-register text-white w-100 mt-3">
+                            Зарегистрироваться <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+
+                        <!-- Ссылка на вход -->
+                        <div class="text-center mt-4">
+                            <p class="text-muted">Уже есть аккаунт? <a th:href="@{/login}" style="color: var(--purple-dark);">Войти</a></p>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Имя пользователя</label>
-                <input type="text" th:field="*{username}"/>
-                <span class="error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
-            </div>
-            <div class="form-group">
-                <label>Пароль</label>
-                <input type="password" th:field="*{passwordHash}"/>
-                <span class="error" th:if="${#fields.hasErrors('passwordHash')}" th:errors="*{passwordHash}"></span>
-            </div>
-            <button type="submit" class="button">Зарегистрироваться</button>
-        </form>
-        <div style="margin-top: 1rem;">
-            <a th:href="@{/login}">Уже есть аккаунт? Войти</a>
         </div>
     </div>
 </div>
+
+<!-- Скрипты -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Анимация и валидация
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('registerForm');
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordStrength = document.getElementById('passwordStrength');
+        const strengthText = document.getElementById('strengthText');
+
+        // Показать/скрыть пароль
+        togglePassword.addEventListener('click', function() {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+
+        // Валидация пароля
+        password.addEventListener('input', function() {
+            const value = this.value;
+            let strength = 0;
+
+            if (value.length >= 6) strength += 30;
+            if (value.match(/[A-Z]/)) strength += 20;
+            if (value.match(/[0-9]/)) strength += 20;
+            if (value.match(/[^A-Za-z0-9]/)) strength += 30;
+
+            passwordStrength.style.width = `${strength}%`;
+
+            // Цвет индикатора
+            if (strength < 50) {
+                passwordStrength.className = 'progress-bar bg-danger';
+                strengthText.textContent = 'Слабый';
+            } else if (strength < 80) {
+                passwordStrength.className = 'progress-bar bg-warning';
+                strengthText.textContent = 'Средний';
+            } else {
+                passwordStrength.className = 'progress-bar bg-success';
+                strengthText.textContent = 'Сильный';
+            }
+        });
+
+        // Проверка совпадения паролей
+        confirmPassword.addEventListener('input', function() {
+            if (this.value !== password.value) {
+                this.classList.add('is-invalid');
+                document.getElementById('confirmPasswordFeedback').style.display = 'block';
+            } else {
+                this.classList.remove('is-invalid');
+                document.getElementById('confirmPasswordFeedback').style.display = 'none';
+            }
+        });
+
+        // Валидация формы перед отправкой
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity() || password.value !== confirmPassword.value) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (password.value !== confirmPassword.value) {
+                    confirmPassword.classList.add('is-invalid');
+                    document.getElementById('confirmPasswordFeedback').style.display = 'block';
+                }
+            }
+
+            form.classList.add('was-validated');
+        }, false);
+    });
+</script>
 </body>
 </html>

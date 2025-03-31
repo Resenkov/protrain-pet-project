@@ -1,8 +1,10 @@
 package resenkov.work.protrain.mapping;
 
+import org.springframework.stereotype.Component;
 import resenkov.work.protrain.dto.WorkoutDTO;
 import resenkov.work.protrain.entity.Workout;
 
+@Component
 public class WorkoutMapper {
     public static WorkoutDTO toDto(Workout workout) {
         WorkoutDTO dto = new WorkoutDTO();

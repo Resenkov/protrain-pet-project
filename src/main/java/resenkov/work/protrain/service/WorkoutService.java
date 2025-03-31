@@ -9,7 +9,6 @@ import resenkov.work.protrain.dto.WorkoutDetailsDTO;
 import resenkov.work.protrain.entity.Workout;
 import resenkov.work.protrain.mapping.WorkoutMapper;
 import resenkov.work.protrain.repository.WorkoutRepository;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -1,32 +1,134 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Вход</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход | Тренировочный трекер</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/login.css}">
 </head>
 <body>
-<header>
-    <h1>Вход в систему</h1>
-</header>
-<div class="container">
-    <div class="card">
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-        <form th:action="@{/login}" method="post">
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" name="username" required/>
-            </div>
-            <div class="form-group">
-                <label>Пароль</label>
-                <input type="password" name="password" required/>
-            </div>
-            <button type="submit" class="button">Войти</button>
-        </form>
-        <div style="margin-top: 1rem;">
-            <a th:href="@{/register}">Регистрация</a> |
-            <a th:href="@{/}">На главную</a>
+<!-- Анимированный фон -->
+<div class="particles"></div>
+
+<!-- Главный контейнер -->
+<div class="login-container animate__animated animate__fadeIn">
+
+    <div class="card login-card">
+        <!-- Логотип -->
+        <div class="text-center mb-4">
+            <img src="/images/logo.png" alt="Логотип" class="logo animate__animated animate__bounceIn">
         </div>
+
+        <!-- Заголовок -->
+        <h2 class="text-center mb-4 animate__animated animate__fadeInDown">С возвращением!</h2>
+
+        <!-- Форма входа -->
+        <form th:action="@{/login}" method="post" class="animate__animated animate__fadeIn animate__delay-1s">
+            <!-- Email -->
+            <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <input type="email" class="form-control" name="username" placeholder="Email" required>
+            </div>
+
+            <!-- Пароль -->
+            <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input type="password" class="form-control" name="password" placeholder="Пароль" required>
+                <button class="btn btn-outline-secondary toggle-password" type="button">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+
+            <!-- Кнопка входа -->
+            <button type="submit" class="btn btn-login btn-lg w-100 mb-3">
+                Войти <i class="fas fa-arrow-right ms-2"></i>
+            </button>
+
+            <div class="alert alert-danger mt-3 animate__animated animate__shakeX"
+                 th:if="${param.error}"
+                 role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                Неверный email или пароль! Попробуйте снова.
+            </div>
+
+            <!-- Ссылки -->
+            <div class="text-center">
+                <a href="/register" class="btn btn-link">Нет аккаунта? Зарегистрируйтесь</a>
+                <a href="/forgot-password" class="btn btn-link">Забыли пароль?</a>
+            </div>
+        </form>
     </div>
 </div>
+
+<!-- Скрипты -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+<script>
+    // Анимация частиц фона
+    function createParticles() {
+        const container = document.querySelector('.particles');
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+
+            // Случайные параметры
+            particle.style.width = `${Math.random() * 15 + 5}px`;
+            particle.style.height = particle.style.width;
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${Math.random() * 100}%`;
+            particle.style.opacity = Math.random() * 0.5 + 0.1;
+            particle.style.animationDuration = `${Math.random() * 10 + 5}s`;
+            particle.style.animationDelay = `${Math.random() * 5}s`;
+
+            container.appendChild(particle);
+        }
+    }
+    // Анимация ошибки
+    if (document.querySelector('.alert-danger')) {
+        gsap.from('.alert-danger', {
+            scale: 0.8,
+            opacity: 0,
+            duration: 0.5,
+            ease: "elastic.out(1, 0.5)"
+        });
+    }
+    // Показать/скрыть пароль
+    document.querySelector('.toggle-password').addEventListener('click', function() {
+        const passwordInput = document.querySelector('input[name="password"]');
+        const icon = this.querySelector('i');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    });
+
+    // Инициализация
+    document.addEventListener('DOMContentLoaded', function() {
+        createParticles();
+
+        // Анимация формы
+        gsap.from('.login-card', {
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            ease: "back.out(1.7)"
+        });
+    });
+</script>
 </body>
 </html>

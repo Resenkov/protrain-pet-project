@@ -1,0 +1,145 @@
+:root {
+    --purple-dark: #6a11cb;
+    --purple-light: #9c27b0;
+    --purple-neon: #c471ed;
+    --white: #ffffff;
+    --black: #1a1a1a;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    overflow-x: hidden;
+}
+
+/* Навбар */
+.bg-purple {
+    background: linear-gradient(135deg, var(--purple-dark), var(--purple-light));
+    box-shadow: 0 4px 20px rgba(106, 17, 203, 0.3);
+}
+
+.navbar-brand {
+    font-weight: 700;
+}
+
+.logo-img {
+    height: 40px;
+    margin-right: 10px;
+}
+
+/* Анимированный фон */
+.particles {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.particle {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    animation: float 8s infinite ease-in-out;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-30px) rotate(180deg); }
+}
+
+/* Карточки статистики */
+.stat-card {
+    border-radius: 15px;
+    padding: 25px;
+    color: white;
+    text-align: center;
+    transition: all 0.3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.stat-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+            to bottom right,
+            rgba(255,255,255,0.2),
+            transparent
+    );
+    transform: rotate(30deg);
+}
+
+.bg-purple-gradient {
+    background: linear-gradient(135deg, var(--purple-dark), var(--purple-light));
+}
+
+.bg-purple-light {
+    background: linear-gradient(135deg, var(--purple-light), var(--purple-neon));
+}
+
+.bg-purple-dark {
+    background: linear-gradient(135deg, #5a0cb3, #6a11cb);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    opacity: 0.8;
+}
+
+/* Кнопки */
+.btn-purple {
+    background: var(--purple-light);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 8px 20px;
+    transition: all 0.3s;
+}
+
+.btn-purple:hover {
+    background: var(--purple-dark);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
+}
+
+/* Карточки тренировок */
+.workout-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    border-left: 4px solid var(--purple-light);
+}
+
+.workout-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-left: 4px solid var(--purple-dark);
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+    .stat-card {
+        padding: 15px;
+    }
+
+    .stat-icon {
+        font-size: 2rem;
+    }
+}

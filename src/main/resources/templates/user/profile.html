@@ -1,26 +1,207 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Профиль</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет | Тренировочный трекер</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <style>
+        :root {
+            --purple-dark: #6a11cb;
+            --purple-light: #9c27b0;
+            --purple-neon: #c471ed;
+            --white: #ffffff;
+            --black: #1a1a1a;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            overflow-x: hidden;
+        }
+
+        /* Навбар */
+        .bg-purple {
+            background: linear-gradient(135deg, var(--purple-dark), var(--purple-light));
+            box-shadow: 0 4px 20px rgba(106, 17, 203, 0.3);
+        }
+
+        /* Карточки статистики */
+        .stat-card {
+            border-radius: 15px;
+            padding: 25px;
+            color: white;
+            text-align: center;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .bg-purple-gradient {
+            background: linear-gradient(135deg, var(--purple-dark), var(--purple-light));
+        }
+
+        /* Анимации */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+
+        /* Модалки */
+        .modal-header.bg-purple {
+            background: linear-gradient(135deg, var(--purple-dark), var(--purple-light));
+        }
+    </style>
 </head>
 <body>
-<header>
-    <div class="user-info">
-        <h1>Мой профиль</h1>
-        <div>
-            <a th:href="@{/profile}" class="button">Назад</a>
-        </div>
+<!-- Навбар -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-purple shadow">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <img src="/images/logo.png" alt="Logo" style="height:40px" class="me-2">
+            Тренировочный трекер
+        </a>
     </div>
-</header>
-<div class="container">
-    <div class="card">
-        <div class="profile-info">
-            <p><strong>Имя пользователя:</strong> <span th:text="${user.username}"></span></p>
-            <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
-            <p><strong>Дата регистрации:</strong> <span th:text="${#temporals.format(user.createdAt, 'dd.MM.yyyy HH:mm')}"></span></p>
+</nav>
+
+<!-- Основной контент -->
+<div class="container py-5">
+    <!-- Статистика -->
+    <div class="row mb-5">
+        <div class="col-md-4 mb-3">
+            <div class="stat-card bg-purple-gradient animate__animated animate__fadeIn">
+                <i class="fas fa-fire fa-2x mb-3"></i>
+                <h3 id="totalWorkouts">0</h3>
+                <p>Всего тренировок</p>
+            </div>
+        </div>
+        <!-- Еще 2 карточки -->
+    </div>
+
+    <!-- Список тренировок -->
+    <div class="card shadow">
+        <div class="card-header bg-white">
+            <h4 class="mb-0"><i class="fas fa-dumbbell me-2"></i>Мои тренировки</h4>
+        </div>
+        <div class="card-body">
+            <div class="row" id="workoutsList">
+                <!-- Тут появятся тренировки -->
+            </div>
         </div>
     </div>
 </div>
+
+<!-- Модалка деталей тренировки -->
+<div class="modal fade" id="workoutDetailsModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-purple text-white">
+                <h5 class="modal-title">Детали тренировки</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="workoutDetailsContent">
+                <!-- Контент загрузится через JS -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модалка добавления тренировки -->
+<div class="modal fade" id="workoutFormModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-purple text-white">
+                <h5 class="modal-title">Новая тренировка</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="workoutForm">
+                    <input type="hidden" id="workoutId">
+                    <div class="mb-3">
+                        <label class="form-label">Дата и время</label>
+                        <input type="datetime-local" class="form-control" id="workoutDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Заметки</label>
+                        <textarea class="form-control" id="workoutNotes" rows="3"></textarea>
+                    </div>
+                    <div id="exercisesContainer"></div>
+                    <button type="button" class="btn btn-sm btn-primary mt-2" onclick="addExerciseField()">
+                        <i class="fas fa-plus me-1"></i> Добавить упражнение
+                    </button>
+                    <button type="submit" class="btn btn-purple w-100 mt-3">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Скрипты -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+
+<script>
+
+    async function loadWorkouts() {
+        try {
+            const response = await fetch('/workout/my'); // Используем новый endpoint
+            const workouts = await response.json();
+            renderWorkouts(workouts);
+        } catch (error) {
+            console.error('Ошибка загрузки тренировок:', error);
+            alert('Не удалось загрузить ваши тренировки');
+        }
+    }
+
+    function renderWorkouts(workouts) {
+        const container = document.getElementById('workoutsList');
+        container.innerHTML = workouts.map(workout => `
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card workout-card">
+                <div class="card-body">
+                    <h5>${new Date(workout.workoutDate).toLocaleDateString()}</h5>
+                    <p>${workout.notes || 'Без заметок'}</p>
+                    <button onclick="showWorkoutDetails(${workout.id})" class="btn btn-sm btn-outline-primary">
+                        Подробнее
+                    </button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    }
+
+    async function showWorkoutDetails(workoutId) {
+        const response = await fetch(`/workout/train/${workoutId}`);
+        const workout = await response.json();
+
+        const exercisesHtml = workout.exercises.map(ex => `
+        <div class="exercise-item mb-3 p-3 bg-light rounded">
+            <h6>${ex.exerciseName}</h6>
+            <div>${ex.sets} x ${ex.reps} (${ex.weightKg} кг)</div>
+        </div>
+    `).join('');
+
+        document.getElementById('workoutDetailsContent').innerHTML = `
+        <h6>Дата: ${new Date(workout.workoutDate).toLocaleString()}</h6>
+        <p class="mb-4">${workout.notes || 'Нет заметок'}</p>
+        <h5>Упражнения:</h5>
+        ${exercisesHtml}
+    `;
+
+        new bootstrap.Modal('#workoutDetailsModal').show();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadWorkouts();
+        document.querySelector('[data-bs-target="#workoutFormModal"]').addEventListener('click', () => {
+            document.getElementById('workoutForm').reset();
+            new bootstrap.Modal('#workoutFormModal').show();
+        });
+    });
+</script>
 </body>
 </html>

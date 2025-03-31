@@ -1,0 +1,148 @@
+/* Основные стили */
+:root {
+    --purple-dark: #6a11cb;
+    --purple-light: #9c27b0;
+    --purple-neon: #c471ed;
+    --white: #ffffff;
+    --black: #1a1a1a;
+    --gray-light: #f8f9fa;
+}
+
+body {
+    background: linear-gradient(135deg, var(--purple-dark), var(--purple-light));
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* Карточка формы */
+.card {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    transition: all 0.5s ease-out;
+    transform-style: preserve-3d;
+    position: relative;
+    z-index: 10;
+}
+
+.card:hover {
+    transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+}
+
+/* Поля формы */
+.form-control {
+    border-radius: 12px;
+    padding: 12px 20px;
+    border: 2px solid rgba(233, 236, 239, 0.7);
+    transition: all 0.3s;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.form-control:focus {
+    border-color: var(--purple-neon);
+    box-shadow: 0 0 0 0.3rem rgba(156, 39, 176, 0.2);
+    transform: scale(1.02);
+}
+
+/* Кнопка регистрации */
+.btn-register {
+    background: linear-gradient(45deg, var(--purple-dark), var(--purple-light));
+    border: none;
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-register:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(106, 17, 203, 0.4);
+}
+
+.btn-register::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+            to bottom right,
+            rgba(255, 255, 255, 0.3),
+            rgba(255, 255, 255, 0)
+    );
+    transform: rotate(30deg);
+    transition: all 0.5s;
+}
+
+.btn-register:hover::after {
+    left: 100%;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}
+
+/* 3D-эффекты */
+.card-3d {
+    perspective: 1000px;
+}
+
+/* Частицы (фон) */
+.particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    animation: float 6s infinite ease-in-out;
+}
+
+/* Для тёмной темы */
+body.dark-mode {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+}
+
+body.dark-mode .card {
+    background: rgba(26, 26, 46, 0.9);
+    color: var(--white);
+}
+
+body.dark-mode .form-control {
+    background: rgba(30, 30, 60, 0.8);
+    color: var(--white);
+    border-color: rgba(255, 255, 255, 0.1);
+}
