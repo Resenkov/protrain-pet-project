@@ -58,7 +58,7 @@ public class WorkoutService {
 
         List<WorkoutDetailsDTO.ExerciseDTO> exercises = workout.getExercises().stream()
                 .map(ex -> new WorkoutDetailsDTO.ExerciseDTO(
-                        ex.getExercise().getExerciseName(),  // Получаем название упражнения
+                        ex.getExercise().getExerciseName(),
                         ex.getSets(),
                         ex.getReps(),
                         ex.getWeightKg(),
