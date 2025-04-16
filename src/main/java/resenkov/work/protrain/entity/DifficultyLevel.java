@@ -17,7 +17,7 @@ import java.util.Objects;
 
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Table(name = "difficulty_levels", schema = "train")
+@Table(name = "difficulty_level",schema = "public")
 public class DifficultyLevel {
 
 
