@@ -20,10 +20,25 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/login", "/", "/css/**", "/js/**","/images/**").permitAll()
+                        .requestMatchers(
+                                "/register",
+                                "/login",
+                                "/",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**",
+                                // Swagger UI
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**",
+                                "/api-docs/**",
+                                "/type/**",
+                                "/api/**"
+                        ).permitAll()
                         .requestMatchers("/profile", "/settings").authenticated()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
@@ -35,6 +50,7 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/")
                         .permitAll()
                 );
+
         return http.build();
     }
 }
