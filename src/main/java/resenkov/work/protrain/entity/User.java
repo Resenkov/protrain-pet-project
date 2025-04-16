@@ -17,7 +17,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "users", schema = "train")
+@Table(name = "user",schema = "public")
 @AllArgsConstructor
 @NoArgsConstructor
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)

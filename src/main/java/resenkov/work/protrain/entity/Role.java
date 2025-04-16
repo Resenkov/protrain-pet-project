@@ -10,7 +10,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Getter
 @Setter
 @Entity
-@Table(name = "roles", schema = "train")
+@Table(name = "role",schema = "public")
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @AllArgsConstructor
 @NoArgsConstructor

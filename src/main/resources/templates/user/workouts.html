@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Мои тренировки</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-4 mb-4">Мои тренировки</h1>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Дата тренировки</th>
+            <th>Тип</th>
+            <th>Уровень сложности</th>
+            <th>Заметки</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="workout : ${workouts}">
+            <td th:text="${workout.id}"></td>
+            <!-- Форматирование даты с помощью утильной функции Thymeleaf -->
+            <td th:text="${#dates.format(workout.workoutDate, 'dd-MM-yyyy HH:mm')}"></td>
+            <!-- Предполагается, что в сущностях DifficultyLevel и WorkoutType есть поле name -->
+            <td th:text="${workout.workoutType.name}">Тип тренировки</td>
+            <td th:text="${workout.difficultyLevel.name}">Уровень</td>
+            <td th:text="${workout.notes}">Заметки</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

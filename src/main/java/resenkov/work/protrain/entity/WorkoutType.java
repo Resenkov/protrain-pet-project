@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "workout_types", schema = "train")
+@Table(name = "workout_type", schema = "public")
 public class WorkoutType {
 
 

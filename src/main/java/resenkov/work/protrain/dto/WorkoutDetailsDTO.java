@@ -14,6 +14,8 @@ public class WorkoutDetailsDTO {
     private LocalDateTime workoutDate;
     private String notes;
     private List<ExerciseDTO> exercises;
+    private String workoutTypeName;
+    private String difficultyLevelName;
 
 
     @Getter

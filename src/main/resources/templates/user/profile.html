@@ -24,13 +24,11 @@
             overflow-x: hidden;
         }
 
-        /* Навбар */
         .bg-purple {
             background: linear-gradient(135deg, var(--purple-dark), var(--purple-light));
             box-shadow: 0 4px 20px rgba(106, 17, 203, 0.3);
         }
 
-        /* Карточки статистики */
         .stat-card {
             border-radius: 15px;
             padding: 25px;
@@ -44,20 +42,18 @@
             background: linear-gradient(135deg, var(--purple-dark), var(--purple-light));
         }
 
-        /* Анимации */
         @keyframes float {
             0%, 100% { transform: translateY(0) rotate(0deg); }
             50% { transform: translateY(-30px) rotate(180deg); }
         }
 
-        /* Модалки */
+
         .modal-header.bg-purple {
             background: linear-gradient(135deg, var(--purple-dark), var(--purple-light));
         }
     </style>
 </head>
 <body>
-<!-- Навбар -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-purple shadow">
     <div class="container">
         <a class="navbar-brand" href="/">
@@ -67,9 +63,7 @@
     </div>
 </nav>
 
-<!-- Основной контент -->
 <div class="container py-5">
-    <!-- Статистика -->
     <div class="row mb-5">
         <div class="col-md-4 mb-3">
             <div class="stat-card bg-purple-gradient animate__animated animate__fadeIn">
@@ -78,23 +72,19 @@
                 <p>Всего тренировок</p>
             </div>
         </div>
-        <!-- Еще 2 карточки -->
     </div>
 
-    <!-- Список тренировок -->
     <div class="card shadow">
         <div class="card-header bg-white">
             <h4 class="mb-0"><i class="fas fa-dumbbell me-2"></i>Мои тренировки</h4>
         </div>
         <div class="card-body">
             <div class="row" id="workoutsList">
-                <!-- Тут появятся тренировки -->
             </div>
         </div>
     </div>
 </div>
 
-<!-- Модалка деталей тренировки -->
 <div class="modal fade" id="workoutDetailsModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -103,13 +93,11 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="workoutDetailsContent">
-                <!-- Контент загрузится через JS -->
             </div>
         </div>
     </div>
 </div>
 
-<!-- Модалка добавления тренировки -->
 <div class="modal fade" id="workoutFormModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -139,7 +127,6 @@
     </div>
 </div>
 
-<!-- Скрипты -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
@@ -187,6 +174,8 @@
 
         document.getElementById('workoutDetailsContent').innerHTML = `
         <h6>Дата: ${new Date(workout.workoutDate).toLocaleString()}</h6>
+        <p><strong>Тип тренировки:</strong> ${workout.workoutTypeName || 'Не указан'}</p>
+        <p><strong>Сложность:</strong> ${workout.difficultyLevelName || 'Не указана'}</p>
         <p class="mb-4">${workout.notes || 'Нет заметок'}</p>
         <h5>Упражнения:</h5>
         ${exercisesHtml}

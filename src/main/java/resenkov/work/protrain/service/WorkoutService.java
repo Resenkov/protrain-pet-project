@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import resenkov.work.protrain.dto.WorkoutDTO;
 import resenkov.work.protrain.dto.WorkoutDetailsDTO;
+import resenkov.work.protrain.entity.User;
 import resenkov.work.protrain.entity.Workout;
 import resenkov.work.protrain.mapping.WorkoutMapper;
 import resenkov.work.protrain.repository.WorkoutRepository;
@@ -21,11 +22,6 @@ public class WorkoutService {
 
     public WorkoutService(WorkoutRepository workoutRepository) {
         this.workoutRepository = workoutRepository;
-    }
-    public List<WorkoutDTO> findAll() {
-        return workoutRepository.findAll().stream()
-                .map(WorkoutMapper::toDto)
-                .collect(Collectors.toList());
     }
 
     public void deleteWorkout(Long id) {
@@ -43,6 +39,7 @@ public class WorkoutService {
         workout = workoutRepository.save(workout);
         return WorkoutMapper.toDto(workout);
     }
+
 
     public WorkoutDetailsDTO getWorkoutDetails(Long workoutId) {
         Workout workout = workoutRepository.findByIdWithExercises(workoutId)
@@ -66,6 +63,21 @@ public class WorkoutService {
                 ))
                 .collect(Collectors.toList());
         dto.setExercises(exercises);
+
+        if (workout.getWorkoutType() != null) {
+            dto.setWorkoutTypeName(workout.getWorkoutType().getTypeName());
+        }
+        if (workout.getDifficultyLevel() != null) {
+            dto.setDifficultyLevelName(workout.getDifficultyLevel().getLevelName());
+        }
+
         return dto;
+    }
+
+    public List<WorkoutDTO> getWorkoutsByUser(User user) {
+        List<Workout> workouts = workoutRepository.findByUser(user);
+        return workouts.stream()
+                .map(WorkoutMapper::toDto)
+                .collect(Collectors.toList());
     }
 }
