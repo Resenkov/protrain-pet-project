@@ -11,4 +11,6 @@ public class WorkoutDTO {
     private Long id;
     private LocalDateTime workoutDate;
     private String notes;
+    private Long workoutTypeId;
+    private Long difficultyLevelId;
 }

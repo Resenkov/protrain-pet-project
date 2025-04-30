@@ -77,14 +77,14 @@ public class AuthController {
         return "user/profile";
     }
 
-    @GetMapping("/settings")
-    @PreAuthorize("isAuthenticated()")
-    public String settings(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        String email = userDetails.getUsername();
-        User user = userService.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
-
-        model.addAttribute("user", user);
-        return "user/settings";
-    }
+//    @GetMapping("/settings")
+//    @PreAuthorize("isAuthenticated()")
+//    public String settings(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+//        String email = userDetails.getUsername();
+//        User user = userService.findByEmail(email)
+//                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+//
+//        model.addAttribute("user", user);
+//        return "user/settings";
+//    }
 }
