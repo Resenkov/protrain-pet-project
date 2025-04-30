@@ -24,11 +24,13 @@
             overflow-x: hidden;
         }
 
+        /* Навбар */
         .bg-purple {
             background: linear-gradient(135deg, var(--purple-dark), var(--purple-light));
             box-shadow: 0 4px 20px rgba(106, 17, 203, 0.3);
         }
 
+        /* Карточки статистики */
         .stat-card {
             border-radius: 15px;
             padding: 25px;
@@ -42,18 +44,20 @@
             background: linear-gradient(135deg, var(--purple-dark), var(--purple-light));
         }
 
+        /* Анимации */
         @keyframes float {
             0%, 100% { transform: translateY(0) rotate(0deg); }
             50% { transform: translateY(-30px) rotate(180deg); }
         }
 
-
+        /* Модалки */
         .modal-header.bg-purple {
             background: linear-gradient(135deg, var(--purple-dark), var(--purple-light));
         }
     </style>
 </head>
 <body>
+<!-- Навбар -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-purple shadow">
     <div class="container">
         <a class="navbar-brand" href="/">
@@ -63,7 +67,9 @@
     </div>
 </nav>
 
+<!-- Основной контент -->
 <div class="container py-5">
+    <!-- Статистика -->
     <div class="row mb-5">
         <div class="col-md-4 mb-3">
             <div class="stat-card bg-purple-gradient animate__animated animate__fadeIn">
@@ -72,19 +78,24 @@
                 <p>Всего тренировок</p>
             </div>
         </div>
+        <!-- Еще 2 карточки -->
     </div>
 
+    <!-- Список тренировок -->
     <div class="card shadow">
         <div class="card-header bg-white">
             <h4 class="mb-0"><i class="fas fa-dumbbell me-2"></i>Мои тренировки</h4>
         </div>
         <div class="card-body">
+            <button id="addWorkoutBtn" class="btn btn-primary mb-3">Добавить тренировку</button>
             <div class="row" id="workoutsList">
+                <!-- Тут появятся тренировки -->
             </div>
         </div>
     </div>
 </div>
 
+<!-- Модалка деталей тренировки -->
 <div class="modal fade" id="workoutDetailsModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -93,11 +104,13 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="workoutDetailsContent">
+                <!-- Контент загрузится через JS -->
             </div>
         </div>
     </div>
 </div>
 
+<!-- Модалка добавления тренировки -->
 <div class="modal fade" id="workoutFormModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -111,6 +124,18 @@
                     <div class="mb-3">
                         <label class="form-label">Дата и время</label>
                         <input type="datetime-local" class="form-control" id="workoutDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Тип тренировки</label>
+                        <select class="form-select" id="workoutTypeId" required>
+                            <option value="">Выберите тип</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Сложность</label>
+                        <select class="form-select" id="difficultyLevelId" required>
+                            <option value="">Выберите сложность</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Заметки</label>
@@ -127,6 +152,7 @@
     </div>
 </div>
 
+<!-- Скрипты -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
@@ -152,8 +178,14 @@
                 <div class="card-body">
                     <h5>${new Date(workout.workoutDate).toLocaleDateString()}</h5>
                     <p>${workout.notes || 'Без заметок'}</p>
-                    <button onclick="showWorkoutDetails(${workout.id})" class="btn btn-sm btn-outline-primary">
+                    <button onclick="showWorkoutDetails(${workout.id})" class="btn btn-sm btn-outline-primary me-2">
                         Подробнее
+                    </button>
+                    <button onclick="editWorkout(${workout.id})" class="btn btn-sm btn-outline-warning me-2">
+                        Редактировать
+                    </button>
+                    <button onclick="deleteWorkout(${workout.id})" class="btn btn-sm btn-outline-danger">
+                        Удалить
                     </button>
                 </div>
             </div>
@@ -186,11 +218,119 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         loadWorkouts();
+        loadWorkoutTypes();
+        loadDifficultyLevels();
         document.querySelector('[data-bs-target="#workoutFormModal"]').addEventListener('click', () => {
             document.getElementById('workoutForm').reset();
             new bootstrap.Modal('#workoutFormModal').show();
         });
     });
+
+    document.getElementById('addWorkoutBtn').addEventListener('click', () => {
+        openWorkoutForm();
+    });
+
+    function openWorkoutForm(workout = null) {
+        if (workout) {
+            document.getElementById('workoutId').value = workout.id;
+            document.getElementById('workoutDate').value = workout.workoutDate ? new Date(workout.workoutDate).toISOString().slice(0,16) : '';
+            document.getElementById('workoutNotes').value = workout.notes || '';
+            document.getElementById('workoutTypeId').value = workout.workoutTypeId || '';
+            document.getElementById('difficultyLevelId').value = workout.difficultyLevelId || '';
+            // TODO: load exercises into form
+        } else {
+            document.getElementById('workoutForm').reset();
+            document.getElementById('workoutId').value = '';
+        }
+        new bootstrap.Modal('#workoutFormModal').show();
+    }
+
+    async function editWorkout(id) {
+        const response = await fetch(`/workout/train/${id}`);
+        const workout = await response.json();
+        openWorkoutForm(workout);
+    }
+
+    async function deleteWorkout(id) {
+        if (!confirm('Вы уверены, что хотите удалить тренировку?')) return;
+        const response = await fetch(`/workout/delete/${id}`, { method: 'DELETE' });
+        if (response.ok) {
+            alert('Тренировка удалена');
+            loadWorkouts();
+        } else {
+            alert('Ошибка при удалении тренировки');
+        }
+    }
+
+    document.getElementById('workoutForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('workoutId').value;
+        const date = document.getElementById('workoutDate').value;
+        const notes = document.getElementById('workoutNotes').value;
+        const workoutTypeId = document.getElementById('workoutTypeId').value;
+        const difficultyLevelId = document.getElementById('difficultyLevelId').value;
+        // TODO: get exercises from form
+
+        const workoutData = {
+            id: id ? Number(id) : null,
+            workoutDate: date,
+            notes: notes,
+            workoutTypeId: workoutTypeId ? Number(workoutTypeId) : null,
+            difficultyLevelId: difficultyLevelId ? Number(difficultyLevelId) : null,
+            // exercises: [] // TODO
+        };
+
+        const url = id ? '/workout/update' : '/workout/add';
+        const method = 'POST';
+
+        const response = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(workoutData)
+        });
+
+        if (response.ok) {
+            alert('Тренировка сохранена');
+            new bootstrap.Modal('#workoutFormModal').hide();
+            loadWorkouts();
+        } else {
+            alert('Ошибка при сохранении тренировки');
+        }
+    });
+
+    async function loadWorkoutTypes() {
+        try {
+            const response = await fetch('/workout/types');
+            const types = await response.json();
+            const select = document.getElementById('workoutTypeId');
+            select.innerHTML = '<option value="">Выберите тип</option>';
+            types.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type.id;
+                option.textContent = type.typeName;
+                select.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Ошибка загрузки типов тренировок:', error);
+        }
+    }
+
+    async function loadDifficultyLevels() {
+        try {
+            const response = await fetch('/workout/difficulties');
+            const difficulties = await response.json();
+            const select = document.getElementById('difficultyLevelId');
+            select.innerHTML = '<option value="">Выберите сложность</option>';
+            difficulties.forEach(diff => {
+                const option = document.createElement('option');
+                option.value = diff.id;
+                option.textContent = diff.levelName;
+                select.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Ошибка загрузки уровней сложности:', error);
+        }
+    }
 </script>
 </body>
 </html>

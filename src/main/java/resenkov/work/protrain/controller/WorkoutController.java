@@ -29,6 +29,12 @@ public class WorkoutController {
         return "user/profile";
     }
 
+    @PostMapping("/train/{id}")
+    public ResponseEntity<WorkoutDetailsDTO> getWorkout(@PathVariable("id") Long id) {
+        WorkoutDetailsDTO dto = workoutService.getWorkoutDetails(id);
+        return ResponseEntity.ok(dto);
+    }
+
     @GetMapping("/train/{id}")
     public ResponseEntity<WorkoutDetailsDTO> getWorkoutGet(@PathVariable("id") Long id) {
         WorkoutDetailsDTO dto = workoutService.getWorkoutDetails(id);
@@ -36,14 +42,14 @@ public class WorkoutController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<WorkoutDTO> addWorkout(@RequestBody WorkoutDTO workoutDTO) {
-        WorkoutDTO workout = workoutService.addWorkout(workoutDTO);
+    public ResponseEntity<WorkoutDTO> addWorkout(@RequestBody WorkoutDTO workoutDTO, @AuthenticationPrincipal org.springframework.security.core.userdetails.UserDetails userDetails) {
+        WorkoutDTO workout = workoutService.addWorkout(workoutDTO, userDetails.getUsername());
         return ResponseEntity.ok(workout);
     }
 
     @PostMapping("/update")
-    public ResponseEntity<WorkoutDTO> updateWorkout(@RequestBody WorkoutDTO workoutDTO) {
-        WorkoutDTO workout = workoutService.updateWorkout(workoutDTO);
+    public ResponseEntity<WorkoutDTO> updateWorkout(@RequestBody WorkoutDTO workoutDTO, @AuthenticationPrincipal org.springframework.security.core.userdetails.UserDetails userDetails) {
+        WorkoutDTO workout = workoutService.updateWorkout(workoutDTO, userDetails.getUsername());
         return ResponseEntity.ok(workout);
     }
 
@@ -61,5 +67,17 @@ public class WorkoutController {
         List<WorkoutDTO> workouts = workoutService.getWorkoutsByUser(user);
         System.out.println("Найдено тренировок (GET): " + workouts.size());
         return ResponseEntity.ok(workouts);
+    }
+
+    @GetMapping("/types")
+    public ResponseEntity<List<?>> getWorkoutTypes() {
+        List<?> types = workoutService.getAllWorkoutTypes();
+        return ResponseEntity.ok(types);
+    }
+
+    @GetMapping("/difficulties")
+    public ResponseEntity<List<?>> getDifficultyLevels() {
+        List<?> difficulties = workoutService.getAllDifficultyLevels();
+        return ResponseEntity.ok(difficulties);
     }
 }
