@@ -8,16 +8,18 @@ import resenkov.work.protrain.dto.WorkoutDTO;
 import resenkov.work.protrain.dto.WorkoutDetailsDTO;
 import resenkov.work.protrain.entity.User;
 import resenkov.work.protrain.entity.Workout;
+import resenkov.work.protrain.entity.WorkoutExercise;
+import resenkov.work.protrain.entity.Exercise;
 import resenkov.work.protrain.mapping.WorkoutMapper;
 import resenkov.work.protrain.repository.WorkoutRepository;
 import resenkov.work.protrain.repository.DifficultyRepository;
 import resenkov.work.protrain.repository.TypeRepository;
+import resenkov.work.protrain.repository.ExerciseRepository;
 import resenkov.work.protrain.entity.DifficultyLevel;
 import resenkov.work.protrain.entity.WorkoutType;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 
 @Transactional
 @Service
@@ -27,12 +29,14 @@ public class WorkoutService {
     private final TypeRepository typeRepository;
     private final DifficultyRepository difficultyRepository;
     private final UserService userService;
+    private final ExerciseRepository exerciseRepository;
 
-    public WorkoutService(WorkoutRepository workoutRepository, TypeRepository typeRepository, DifficultyRepository difficultyRepository, UserService userService) {
+    public WorkoutService(WorkoutRepository workoutRepository, TypeRepository typeRepository, DifficultyRepository difficultyRepository, UserService userService, ExerciseRepository exerciseRepository) {
         this.workoutRepository = workoutRepository;
         this.typeRepository = typeRepository;
         this.difficultyRepository = difficultyRepository;
         this.userService = userService;
+        this.exerciseRepository = exerciseRepository;
     }
 
     public void deleteWorkout(Long id) {
@@ -59,6 +63,21 @@ public class WorkoutService {
         User user = userService.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("Пользователь не найден"));
         workout.setUser(user);
 
+        workout.getExercises().clear();
+        if (workoutDTO.getExercises() != null) {
+            for (WorkoutDTO.ExerciseDTO exDto : workoutDTO.getExercises()) {
+                Exercise exercise = exerciseRepository.findById(exDto.getExerciseId())
+                        .orElseThrow(() -> new RuntimeException("Упражнение не найдено: " + exDto.getExerciseId()));
+                WorkoutExercise we = new WorkoutExercise();
+                we.setWorkout(workout);
+                we.setExercise(exercise);
+                we.setSets(exDto.getSets());
+                we.setReps(exDto.getReps());
+                we.setWeightKg(exDto.getWeightKg());
+                workout.getExercises().add(we);
+            }
+        }
+
         workout = workoutRepository.save(workout);
         return WorkoutMapper.toDto(workout);
     }
@@ -79,12 +98,23 @@ public class WorkoutService {
         User user = userService.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("Пользователь не найден"));
         workout.setUser(user);
 
+        if (workoutDTO.getExercises() != null) {
+            for (WorkoutDTO.ExerciseDTO exDto : workoutDTO.getExercises()) {
+                Exercise exercise = exerciseRepository.findById(exDto.getExerciseId())
+                        .orElseThrow(() -> new RuntimeException("Упражнение не найдено: " + exDto.getExerciseId()));
+                WorkoutExercise we = new WorkoutExercise();
+                we.setWorkout(workout);
+                we.setExercise(exercise);
+                we.setSets(exDto.getSets());
+                we.setReps(exDto.getReps());
+                we.setWeightKg(exDto.getWeightKg());
+                workout.getExercises().add(we);
+            }
+        }
+
         workout = workoutRepository.save(workout);
         return WorkoutMapper.toDto(workout);
     }
-
-
-
 
     public WorkoutDetailsDTO getWorkoutDetails(Long workoutId) {
         Workout workout = workoutRepository.findByIdWithExercises(workoutId)
@@ -120,7 +150,7 @@ public class WorkoutService {
     }
 
     public List<WorkoutDTO> getWorkoutsByUser(User user) {
-        List<Workout> workouts = workoutRepository.findByUser(user);
+        List <Workout> workouts = workoutRepository.findByUser(user);
         return workouts.stream()
                 .map(WorkoutMapper::toDto)
                 .collect(Collectors.toList());

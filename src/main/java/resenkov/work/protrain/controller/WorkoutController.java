@@ -24,6 +24,11 @@ public class WorkoutController {
         this.userService = userService;
     }
 
+    @GetMapping("/user/name")
+    public ResponseEntity<String> getCurrentUserName(@AuthenticationPrincipal org.springframework.security.core.userdetails.UserDetails userDetails) {
+        return ResponseEntity.ok(userDetails.getUsername());
+    }
+
     @GetMapping("/profile")
     public String profilePage() {
         return "user/profile";
@@ -54,18 +59,16 @@ public class WorkoutController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<WorkoutDTO> deleteWorkout(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteWorkout(@PathVariable("id") Long id) {
         workoutService.deleteWorkout(id);
-        return new ResponseEntity(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/my")
     public ResponseEntity<List<WorkoutDTO>> getMyWorkoutsGet(@AuthenticationPrincipal org.springframework.security.core.userdetails.UserDetails userDetails) {
         String email = userDetails.getUsername();
-        System.out.println("Получен GET запрос на тренировки пользователя: " + email);
         User user = userService.findByEmail(email).orElseThrow(() -> new RuntimeException("Пользователь не найден"));
-        List<WorkoutDTO> workouts = workoutService.getWorkoutsByUser(user);
-        System.out.println("Найдено тренировок (GET): " + workouts.size());
+        List <WorkoutDTO> workouts = workoutService.getWorkoutsByUser(user);
         return ResponseEntity.ok(workouts);
     }
 

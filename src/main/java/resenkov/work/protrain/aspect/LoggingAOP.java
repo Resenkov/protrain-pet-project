@@ -13,7 +13,7 @@ import org.springframework.util.StopWatch;
 @Log
 @Component
 public class LoggingAOP {
-    @Around("execution(* resenkov.work.protrain.controller..*(..))")
+    @Around("execution(* resenkov.work.protrain..*(..))")
     public Object profileControllerMethods(ProceedingJoinPoint pjp) throws Throwable {
         MethodSignature signature = (MethodSignature) pjp.getSignature();
 
